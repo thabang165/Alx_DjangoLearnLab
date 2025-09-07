@@ -37,3 +37,13 @@ urlpatterns = [
     path('books/<int:pk>/delete/', views.delete_book, name='delete_book'),
 ]
 
+# LibraryProject/relationship_app/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('books/', views.list_books, name='list_books'),
+    path('books/add/', views.add_book, name='add_book'),          # Added
+    path('books/<int:pk>/edit/', views.edit_book, name='edit_book'),  # Added
+    path('books/<int:pk>/delete/', views.delete_book, name='delete_book'),
+]
