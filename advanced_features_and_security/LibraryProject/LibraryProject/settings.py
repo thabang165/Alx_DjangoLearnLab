@@ -145,3 +145,27 @@ SECURE_HSTS_PRELOAD = True
 
 # Ensure only allowed hosts can access the site
 ALLOWED_HOSTS = ["yourdomain.com"]  # replace with your production domain
+# ======================
+# HTTPS & SSL SETTINGS
+# ======================
+
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # 1 year in seconds
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+# ======================
+# SECURE COOKIE SETTINGS
+# ======================
+
+SESSION_COOKIE_SECURE = True   # Only send session cookies over HTTPS
+CSRF_COOKIE_SECURE = True      # Only send CSRF cookies over HTTPS
+# ======================
+# ADDITIONAL SECURITY HEADERS
+# ======================
+
+X_FRAME_OPTIONS = 'DENY'               # Prevents clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True     # Prevents MIME-type sniffing
+SECURE_BROWSER_XSS_FILTER = True       # Enables XSS filtering in browser
