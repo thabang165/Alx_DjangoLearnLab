@@ -3,6 +3,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Book
 from .forms import BookForm
 
+@permission_required('bookshelf.can_view', raise_exception=True)
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'bookshelf/list_books.html', {'books': books})
+
 @permission_required('bookshelf.can_create', raise_exception=True)
 def create_book(request):
     if request.method == "POST":
@@ -11,7 +16,7 @@ def create_book(request):
             book = form.save(commit=False)
             book.user = request.user
             book.save()
-            return redirect('list_books')
+            return redirect('book_list')  # use new name
     else:
         form = BookForm()
     return render(request, 'bookshelf/add_book.html', {'form': form})
@@ -23,7 +28,7 @@ def edit_book(request, pk):
         form = BookForm(request.POST, instance=book)
         if form.is_valid():
             form.save()
-            return redirect('list_books')
+            return redirect('book_list')  # use new name
     else:
         form = BookForm(instance=book)
     return render(request, 'bookshelf/edit_book.html', {'form': form})
@@ -33,6 +38,6 @@ def delete_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
     if request.method == "POST":
         book.delete()
-        return redirect('list_books')
+        return redirect('book_list')  # use new name
     return render(request, 'bookshelf/delete_book.html', {'book': book})
 
