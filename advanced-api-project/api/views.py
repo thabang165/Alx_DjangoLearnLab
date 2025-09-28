@@ -1,3 +1,6 @@
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+
+
 class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
