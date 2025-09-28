@@ -1,5 +1,5 @@
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-
+from django_filters import rest_framework  
 
 class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
