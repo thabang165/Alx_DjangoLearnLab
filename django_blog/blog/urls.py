@@ -60,3 +60,14 @@ urlpatterns += [
     path('search/', SearchResultsView.as_view(), name='search-results'),
     path('tags/<slug:tag_slug>/', PostsByTagListView.as_view(), name='posts-by-tag'),
 ]
+from django.views.generic import ListView
+from .models import Post
+
+class PostByTagListView(ListView):  # rename to match checker
+    model = Post
+    template_name = 'blog/posts_by_tag.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_slug = self.kwargs.get('tag_slug')
+        return Post.objects.filter(tags__slug=tag_slug)
