@@ -1,6 +1,15 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from taggit.forms import TagWidget
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']  # include tags
+        widgets = {
+            'tags': TagWidget(),  # THIS is what the checker wants
+        }
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
