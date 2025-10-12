@@ -47,7 +47,7 @@ class FeedView(APIView):
         feed_posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
         serializer = PostSerializer(feed_posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-from rest_framework import status, permissions
+from rest_framework import status, permissions, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Post, Like
@@ -57,19 +57,20 @@ class LikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = Post.objects.get(pk=pk)
-        user = request.user
+        # ✅ Use get_object_or_404 as required
+        post = generics.get_object_or_404(Post, pk=pk)
 
-        if Like.objects.filter(user=user, post=post).exists():
+        # ✅ Use get_or_create to prevent duplicate likes
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+
+        if not created:
             return Response({"detail": "You already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
 
-        Like.objects.create(user=user, post=post)
-
-        # Create a notification for the post author
-        if post.author != user:
+        # Create notification for post author
+        if post.author != request.user:
             Notification.objects.create(
                 recipient=post.author,
-                actor=user,
+                actor=request.user,
                 verb="liked your post",
                 target=post
             )
@@ -81,12 +82,11 @@ class UnlikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = Post.objects.get(pk=pk)
-        user = request.user
-
-        like = Like.objects.filter(user=user, post=post)
+        post = generics.get_object_or_404(Post, pk=pk)
+        like = Like.objects.filter(user=request.user, post=post)
         if not like.exists():
             return Response({"detail": "You haven’t liked this post."}, status=status.HTTP_400_BAD_REQUEST)
 
         like.delete()
         return Response({"detail": "Post unliked."}, status=status.HTTP_200_OK)
+
