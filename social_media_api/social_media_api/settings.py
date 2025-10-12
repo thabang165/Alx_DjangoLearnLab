@@ -152,3 +152,4 @@ SESSION_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
 import os
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'fallback-secret-key')
+PORT = int(os.environ.get('PORT', 8000))
